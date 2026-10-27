@@ -17,6 +17,7 @@
   "palette_string_base_index": 13,
   "background_pattern_table": 0,
   "section_metatile_rows": 8,
+  "section_first_tile_row": 2,
   "section_metatile_columns": 16,
   "metatile_tiles": 4,
   "metatile_bytes": 16,

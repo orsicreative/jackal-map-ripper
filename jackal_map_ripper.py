@@ -13,7 +13,7 @@ import struct
 import sys
 import zlib
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 HERE = pathlib.Path(__file__).resolve().parent
 INES_HEADER_SIZE = 16
@@ -142,8 +142,11 @@ def render_stage(rom, profile, stage, master_palette):
     columns = profile["section_metatile_columns"]
     rows_per_section = profile["section_metatile_rows"]
     metatile_pixels = side * TILE_PIXELS
+    # The game starts every section at tile row 2 ($CD8A), so its bottom rows are never shown.
+    first_row = profile["section_first_tile_row"]
+    shown_rows = rows_per_section * side - first_row
     width = columns * metatile_pixels
-    height = layout.section_count * rows_per_section * metatile_pixels
+    height = layout.section_count * shown_rows * TILE_PIXELS
     image = [bytearray(width) for _ in range(height)]
 
     for section in range(layout.section_count):
@@ -152,16 +155,19 @@ def render_stage(rom, profile, stage, master_palette):
                 metatile = layout.metatile_id(section, row, column)
                 tiles = layout.metatile_tiles(metatile)
                 attribute = layout.metatile_attribute(metatile)
-                # World y of this metatile's top edge; sections and rows count upward from the stage start.
-                top = height - ((section * rows_per_section + row) + 1) * metatile_pixels
                 for tile_row in range(side):          # tile_row 0 is the bottom row of the metatile
+                    section_row = row * side + tile_row
+                    if section_row < first_row:
+                        continue
+                    # World tile row, counted up from the stage start.
+                    world_row = section * shown_rows + section_row - first_row
                     quadrant_y = 0 if tile_row >= side // 2 else 1
                     for tile_column in range(side):
                         quadrant_x = tile_column // (side // 2)
                         palette_number = attribute >> (2 * (quadrant_y * 2 + quadrant_x)) & 3
                         tile = tiles[tile_row * side + tile_column]
                         pattern = pattern_base + tile * TILE_BYTES
-                        y0 = top + (side - 1 - tile_row) * TILE_PIXELS
+                        y0 = height - (world_row + 1) * TILE_PIXELS
                         x0 = column * metatile_pixels + tile_column * TILE_PIXELS
                         for y in range(TILE_PIXELS):
                             low, high = vram[pattern + y], vram[pattern + y + TILE_PIXELS]

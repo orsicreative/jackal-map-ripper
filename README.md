@@ -26,7 +26,7 @@ Jackal (mapper 2 / UxROM, CHR-RAM) builds its scrolling background from a three-
 | Level | Size | Where |
 |-------|------|-------|
 | Stage | list of section ids, bottom to top | pointer table `$CFF4` (by stage), in the bank from `$DBEE` |
-| Section | 8 rows × 16 metatile ids = 512×256 px | pointer table `$D000`, 128 bytes per section |
+| Section | 8 rows × 16 metatile ids = 512×256 px of data. Only 240 px are shown: the game starts each section at tile row 2 (`$CD8A`) | pointer table `$D000`, 128 bytes per section |
 | Metatile | 4×4 tiles = 32×32 px, rows stored bottom-up | common table `($D00C)`. Ids ≥ `$CFEE[stage]` use the stage table `($D00C + stage*2)` |
 | Attributes | one byte per metatile, 2 bits per 16×16 quadrant | pointer table `$D018` |
 
@@ -34,7 +34,7 @@ Jackal (mapper 2 / UxROM, CHR-RAM) builds its scrolling background from a three-
 - **Palette:** a PPU string `[$3F, $00, 32 bytes, $FE]`, entry `$0D + stage` in the pointer table at `$D25D`.
 - **Stage length:** the section data immediately follows the section list, so the number of sections is the gap between the two pointers.
 
-The format was found by statically recompiling the game to C and tracing which code writes the game's VRAM update queue at `$0770`. The row producer lives at `$CDC7-$CFA8`. Stage 1 output was verified against live hardware state: every nametable row and every attribute quadrant matched.
+The format was found by statically recompiling the game to C and tracing which code writes the game's VRAM update queue at `$0770`. The row producer lives at `$CDC7-$CFA8`. Checked against the running game in stage 1: every nametable row and attribute quadrant matched, and rendering the decoded map under the live picture over 842 gameplay frames matched 97.3% of pixels (the rest are sprites and the HUD).
 
 ## Known limitations
 

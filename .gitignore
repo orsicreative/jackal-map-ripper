@@ -1,0 +1,5 @@
+# Never commit game data or anything ripped from it
+*.nes
+maps/
+*.png
+__pycache__/

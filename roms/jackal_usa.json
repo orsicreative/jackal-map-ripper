@@ -1,0 +1,24 @@
+{
+  "_comment": "Where Jackal (USA) keeps its level data. CPU addresses; $C000-$FFFF is the fixed bank 7, $8000-$BFFF the switchable bank.",
+  "name": "Jackal (USA)",
+  "prg_sha1": "813e6a8bc0a502bb393f8729b1bc19836d5421a5",
+  "mapper": 2,
+  "stage_count": 6,
+  "tables": {
+    "level_bank_by_stage": "DBEE",
+    "section_list_pointers": "CFF4",
+    "section_data_pointers": "D000",
+    "metatile_pointers": "D00C",
+    "metatile_attribute_pointers": "D018",
+    "stage_metatile_threshold": "CFEE",
+    "graphics_set_pointers": "C473",
+    "ppu_string_pointers": "D25D"
+  },
+  "palette_string_base_index": 13,
+  "background_pattern_table": 0,
+  "section_metatile_rows": 8,
+  "section_metatile_columns": 16,
+  "metatile_tiles": 4,
+  "metatile_bytes": 16,
+  "section_bytes": 128
+}
